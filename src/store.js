@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 const store = (set) => ({
   loans: [],
@@ -8,4 +9,4 @@ const store = (set) => ({
   addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
 })
 
-export const useStore = create(store)
+export const useStore = create(persist(store, { name: 'store' }))
