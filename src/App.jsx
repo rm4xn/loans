@@ -1,30 +1,38 @@
-import { BookUser, House } from 'lucide-react'
+import { BookUser, House, Settings } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
 function App() {
   return (
     <>
-      <main className='max-w-lg mx-auto p-4 relative'>
-        <Outlet />
-      </main>
-      <div className='dock max-w-lg mx-auto'>
+      <Outlet />
+      <div className="dock max-w-lg mx-auto">
         <NavLink
-          to='/'
+          to="/"
           className={({ isActive }) => (isActive ? 'dock-active' : '')}
         >
-          <button className='flex flex-col items-center'>
+          <button className="flex flex-col items-center">
             <House />
-            <span className='dock-label'>Home</span>
+            <span className="dock-label">Home</span>
           </button>
         </NavLink>
 
         <NavLink
-          to='/contacts'
+          to="/contacts"
           className={({ isActive }) => (isActive ? 'dock-active' : '')}
         >
-          <button className='flex flex-col items-center'>
+          <button className="flex flex-col items-center">
             <BookUser />
-            <span className='dock-label'>Contacts</span>
+            <span className="dock-label">Contacts</span>
+          </button>
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => (isActive ? 'dock-active' : '')}
+        >
+          <button className="flex flex-col items-center">
+            <Settings />
+            <span className="dock-label">Settings</span>
           </button>
         </NavLink>
       </div>
