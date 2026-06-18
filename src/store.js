@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 const store = (set) => ({
   loans: [],
@@ -7,6 +7,27 @@ const store = (set) => ({
   addContact: (contact) =>
     set((state) => ({ contacts: [...state.contacts, contact] })),
   addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
+  updateLoan: (id, updatedLoan) =>
+    set((state) => ({
+      loans: state.loans.map((loan) =>
+        loan.id === id ? { ...loan, ...updatedLoan, id: loan.id } : loan,
+      ),
+    })),
+  deleteLoan: (id) =>
+    set((state) => ({ loans: state.loans.filter((loan) => loan.id !== id) })),
 })
 
-export const useStore = create(persist(store, { name: 'store' }))
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
+const storage = createJSONStorage(() => localStorage, {
+  reviver: (key, value) =>
+    typeof value === 'string' && ISO_DATE_REGEX.test(value)
+      ? new Date(value)
+      : value,
+})
+
+export const useStore = create(
+  persist(store, {
+    name: 'store',
+    storage,
+  }),
+)

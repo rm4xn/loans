@@ -20,7 +20,7 @@ function Home() {
         </button>
         <LoanCreation
           id="loanCreationModal"
-          onCreate={() => document.getElementById('loanCreationModal').close()}
+          onClose={() => document.getElementById('loanCreationModal').close()}
         />
       </div>
       <section>
@@ -52,7 +52,7 @@ function Home() {
                 </div>
                 <button
                   className="btn btn-square btn-ghost"
-                  onClick={() => navigate(`/loans/${loan._id}`)}
+                  onClick={() => navigate(`/loans/${loan.id}`)}
                 >
                   <ChevronRight />
                 </button>

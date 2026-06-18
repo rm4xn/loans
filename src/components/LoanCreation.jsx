@@ -3,19 +3,31 @@ import Loan from '../classes/Loan'
 import { useStore } from '../store'
 
 function LoanCreation(props) {
-  const [amount, setAmount] = useState('')
-  const [contact, setContact] = useState(null)
-  const [paymentDate, setPaymentDate] = useState('')
+  const [amount, setAmount] = useState(props.loan?.amount ?? '')
+  const [contact, setContact] = useState(props.loan?.contact ?? null)
+  const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
+    props.loan?.estimatedPaymentDate ?? '',
+  )
   const contacts = useStore((state) => state.contacts)
   const addLoan = useStore((state) => state.addLoan)
+  const updateLoan = useStore((state) => state.updateLoan)
 
   function handleClick() {
     if (amount && contact) {
-      const loan = new Loan(amount, contact, paymentDate)
-      addLoan(loan)
-      props.onCreate()
+      if (props.loan) {
+        updateLoan(props.loan.id, {
+          amount,
+          estimatedPaymentDate: estimatedPaymentDate,
+        })
+      } else {
+        const loan = new Loan(amount, contact, estimatedPaymentDate)
+        addLoan(loan)
+      }
+      props.onClose()
     }
   }
+
+  const isEditing = Boolean(props.loan)
 
   return (
     <dialog id={props.id} className="modal">
@@ -25,32 +37,37 @@ function LoanCreation(props) {
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">Create New Loan</h3>
+        <h3 className="font-bold text-lg">
+          {isEditing ? 'Edit Loan' : 'Create New Loan'}
+        </h3>
         <div className="fieldset">
-          <label className="label">Contact</label>
-          <input
-            id="contact-input"
-            type="text"
-            className="input"
-            list="contacts"
-            onBlur={(e) => {
-              const selectedContact = contacts.find(
-                (c) => c.name === e.target.value,
-              )
-              if (!selectedContact) {
-                e.target.value = contact ? contact.name : ''
-                return
-              }
-              setContact(selectedContact)
-            }}
-            required
-          />
-          <datalist id="contacts">
-            {contacts.map((contact) => (
-              <option key={contact.id} value={contact.name} />
-            ))}
-          </datalist>
-
+          {!isEditing && (
+            <>
+              <label className="label">Contact</label>
+              <input
+                id="contact-input"
+                type="text"
+                className="input"
+                list="contacts"
+                onBlur={(e) => {
+                  const selectedContact = contacts.find(
+                    (c) => c.name === e.target.value,
+                  )
+                  if (!selectedContact) {
+                    e.target.value = contact ? contact.name : ''
+                    return
+                  }
+                  setContact(selectedContact)
+                }}
+                required
+              />
+              <datalist id="contacts">
+                {contacts.map((contact) => (
+                  <option key={contact.id} value={contact.name} />
+                ))}
+              </datalist>
+            </>
+          )}
           <label className="label">Amount</label>
           <input
             type="number"
@@ -64,11 +81,15 @@ function LoanCreation(props) {
           <input
             type="date"
             className="input"
-            value={paymentDate}
-            onChange={(e) => setPaymentDate(e.target.value)}
+            value={estimatedPaymentDate}
+            onChange={(e) => setEstimatedPaymentDate(e.target.value)}
           />
-          <button className="btn btn-neutral mt-4" onClick={handleClick}>
-            Create Loan
+          <button
+            type="button"
+            className="btn btn-neutral mt-4"
+            onClick={handleClick}
+          >
+            {isEditing ? 'Save Changes' : 'Create Loan'}
           </button>
         </div>
       </div>
