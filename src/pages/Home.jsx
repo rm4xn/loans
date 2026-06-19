@@ -30,7 +30,7 @@ function Home() {
           {loans
             .sort((a, b) => b.createdAt - a.createdAt)
             .map((loan) => (
-              <li className="list-row" key={loan._id}>
+              <li className="list-row" key={loan.id}>
                 <div></div>
                 <div>
                   <div>{loan.contact.name}</div>

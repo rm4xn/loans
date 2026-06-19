@@ -16,6 +16,13 @@ function Loan() {
     window.open(whatsappUrl, '_blank')
   }
 
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this loan?')) {
+      deleteLoan(loan.id)
+      navigate(-1)
+    }
+  }
+
   if (!loan) {
     return (
       <div role="alert" className="alert">
@@ -85,13 +92,7 @@ function Loan() {
           </svg>
           Send WhatsApp Reminder
         </button>
-        <button
-          className="btn btn-error btn-block"
-          onClick={() => {
-            deleteLoan(loan.id)
-            navigate(-1)
-          }}
-        >
+        <button className="btn btn-error btn-block" onClick={handleDelete}>
           Delete Loan
         </button>
       </div>

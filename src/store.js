@@ -3,9 +3,6 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 const store = (set) => ({
   loans: [],
-  contacts: [],
-  addContact: (contact) =>
-    set((state) => ({ contacts: [...state.contacts, contact] })),
   addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
   updateLoan: (id, updatedLoan) =>
     set((state) => ({
@@ -15,6 +12,13 @@ const store = (set) => ({
     })),
   deleteLoan: (id) =>
     set((state) => ({ loans: state.loans.filter((loan) => loan.id !== id) })),
+  contacts: [],
+  addContact: (contact) =>
+    set((state) => ({ contacts: [...state.contacts, contact] })),
+  deleteContact: (id) =>
+    set((state) => ({
+      contacts: state.contacts.filter((contact) => contact.id !== id),
+    })),
 })
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/

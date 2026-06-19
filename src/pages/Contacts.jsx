@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router'
-import { ChevronRight } from 'lucide-react'
+import { Trash, SquarePen } from 'lucide-react'
 import { useStore } from '../store'
 import ContactCreation from '../components/ContactCreation'
 
 function Contacts() {
   const contacts = useStore((state) => state.contacts)
+  const deleteContact = useStore((state) => state.deleteContact)
   const navigate = useNavigate()
+
+  const handleDeleteContact = (contactId) => {
+    if (window.confirm('Are you sure you want to delete this contact?')) {
+      deleteContact(contactId)
+    }
+  }
 
   return (
     <>
@@ -33,15 +40,28 @@ function Contacts() {
           {contacts
             .sort((a, b) => b.createdAt - a.createdAt)
             .map((contact) => (
-              <li className="list-row" key={contact._id}>
+              <li className="list-row" key={contact.id}>
                 <div></div>
-                <div className="flex items-center">{contact.name}</div>
-                <button
-                  className="btn btn-square btn-ghost"
-                  onClick={() => navigate(`/contacts/${contact._id}`)}
-                >
-                  <ChevronRight />
-                </button>
+                <div>
+                  <div>{contact.name}</div>
+                  <div className="text-xs uppercase font-semibold opacity-60">
+                    {contact.phoneNumber}
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className="btn btn-square btn-ghost"
+                    onClick={() => navigate(`/contacts/${contact.id}`)}
+                  >
+                    <SquarePen />
+                  </button>
+                  <button
+                    className="btn btn-square btn-ghost btn-error"
+                    onClick={() => handleDeleteContact(contact.id)}
+                  >
+                    <Trash />
+                  </button>
+                </div>
               </li>
             ))}
         </ul>
