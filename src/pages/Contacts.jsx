@@ -1,12 +1,13 @@
-import { useNavigate } from 'react-router'
 import { Trash, SquarePen } from 'lucide-react'
 import { useStore } from '../store'
-import ContactCreation from '../components/ContactCreation'
+import ContactForm from '../components/ContactForm'
+import { useState } from 'react'
 
 function Contacts() {
   const contacts = useStore((state) => state.contacts)
   const deleteContact = useStore((state) => state.deleteContact)
-  const navigate = useNavigate()
+  const [selectedContact, setSelectedContact] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleDeleteContact = (contactId) => {
     if (window.confirm('Are you sure you want to delete this contact?')) {
@@ -14,23 +15,25 @@ function Contacts() {
     }
   }
 
+  const handleCreateContact = () => {
+    setSelectedContact(null)
+    setIsOpen(true)
+  }
+
+  const handleEditContact = (contact) => {
+    setSelectedContact(contact)
+    setIsOpen(true)
+  }
+
   return (
     <>
       <div className="mb-4">
         <button
           className="btn btn-block btn-primary"
-          onClick={() =>
-            document.getElementById('contactCreationModal').showModal()
-          }
+          onClick={handleCreateContact}
         >
           Create New Contact
         </button>
-        <ContactCreation
-          id="contactCreationModal"
-          onCreate={() =>
-            document.getElementById('contactCreationModal').close()
-          }
-        />
       </div>
 
       <section>
@@ -51,7 +54,7 @@ function Contacts() {
                 <div>
                   <button
                     className="btn btn-square btn-ghost"
-                    onClick={() => navigate(`/contacts/${contact.id}`)}
+                    onClick={() => handleEditContact(contact)}
                   >
                     <SquarePen />
                   </button>
@@ -66,6 +69,15 @@ function Contacts() {
             ))}
         </ul>
       </section>
+      {isOpen && (
+        <ContactForm
+          id="contactModal"
+          onClose={() => {
+            setIsOpen(false)
+          }}
+          {...(selectedContact && { contact: selectedContact })}
+        />
+      )}
     </>
   )
 }

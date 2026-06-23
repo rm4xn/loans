@@ -1,29 +1,40 @@
-import { useState } from 'react'
-import Contact from '../classes/Contact'
+import { useEffect, useState } from 'react'
 import { useStore } from '../store'
+import Contact from '../classes/Contact'
 
-function ContactCreation(props) {
-  const [name, setName] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
+export default function ContactForm({ id, contact, onClose }) {
+  const [name, setName] = useState(contact?.name || '')
+  const [phoneNumber, setPhoneNumber] = useState(contact?.phoneNumber || '')
+
   const addContact = useStore((state) => state.addContact)
+  const updateContact = useStore((state) => state.updateContact)
+
+  useEffect(() => {
+    document.getElementById(id).showModal()
+  }, [id])
 
   function handleClick() {
-    if (name && phoneNumber) {
-      const contact = new Contact(name, phoneNumber)
-      addContact(contact)
-      props.onCreate()
+    document.getElementById(id).close()
+    const formData = { name, phoneNumber }
+    if (contact) {
+      updateContact(contact.id, formData)
+    } else {
+      addContact(new Contact(formData.name, formData.phoneNumber))
     }
+    onClose()
   }
 
   return (
-    <dialog id={props.id} className="modal">
+    <dialog id={id} className="modal" onClose={onClose}>
       <div className="modal-box w-max">
         <form method="dialog">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
         </form>
-        <h3 className="text-lg font-bold">Create Contact</h3>
+        <h3 className="text-lg font-bold">
+          {contact ? 'Edit Contact' : 'Create Contact'}
+        </h3>
         <div className="fieldset">
           <label className="label">Name</label>
           <input
@@ -43,12 +54,10 @@ function ContactCreation(props) {
           />
 
           <button className="btn btn-neutral mt-4" onClick={handleClick}>
-            Create Contact
+            {contact ? 'Update' : 'Create'}
           </button>
         </div>
       </div>
     </dialog>
   )
 }
-
-export default ContactCreation

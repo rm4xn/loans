@@ -15,6 +15,12 @@ const store = (set) => ({
   contacts: [],
   addContact: (contact) =>
     set((state) => ({ contacts: [...state.contacts, contact] })),
+  updateContact: (id, updatedContact) =>
+    set((state) => ({
+      contacts: state.contacts.map((contact) =>
+        contact.id === id ? { ...updatedContact, id: contact.id } : contact,
+      ),
+    })),
   deleteContact: (id) =>
     set((state) => ({
       contacts: state.contacts.filter((contact) => contact.id !== id),
