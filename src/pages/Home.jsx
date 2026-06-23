@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { ChevronRight } from 'lucide-react'
 import { useStore } from '../store'
-import LoanCreation from '../components/LoanCreation'
+import LoanForm from '../components/LoanForm'
 
 function Home() {
   const loans = useStore((state) => state.loans)
@@ -18,7 +18,7 @@ function Home() {
         >
           Create New Loan
         </button>
-        <LoanCreation
+        <LoanForm
           id="loanCreationModal"
           onClose={() => document.getElementById('loanCreationModal').close()}
         />

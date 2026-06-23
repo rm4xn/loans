@@ -2,7 +2,7 @@ import { useParams } from 'react-router'
 import { Info, ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { useStore } from '../store'
-import LoanCreation from '../components/LoanCreation'
+import LoanForm from '../components/LoanForm'
 
 function Loan() {
   const { id } = useParams()
@@ -96,7 +96,7 @@ function Loan() {
           Delete Loan
         </button>
       </div>
-      <LoanCreation
+      <LoanForm
         id="loanEditModal"
         loan={loan}
         onClose={() => document.getElementById('loanEditModal').close()}

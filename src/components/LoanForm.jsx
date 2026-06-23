@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Loan from '../classes/Loan'
 import { useStore } from '../store'
 
-function LoanCreation(props) {
+export default function LoanForm(props) {
   const [amount, setAmount] = useState(props.loan?.amount ?? '')
   const [contact, setContact] = useState(props.loan?.contact ?? null)
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
@@ -96,5 +96,3 @@ function LoanCreation(props) {
     </dialog>
   )
 }
-
-export default LoanCreation
