@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
+const STORE_VERSION = 1
+const STORE_KEY = `store:v${STORE_VERSION}`
+
 const store = (set) => ({
   loans: [],
   addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
@@ -28,16 +31,32 @@ const store = (set) => ({
 })
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
-const storage = createJSONStorage(() => localStorage, {
-  reviver: (key, value) =>
-    typeof value === 'string' && ISO_DATE_REGEX.test(value)
-      ? new Date(value)
-      : value,
-})
+
+function createSafeStorage() {
+  try {
+    // Test localStorage availability (throws in private browsing)
+    localStorage.getItem('__test')
+  } catch {
+    // Fallback in-memory storage when localStorage is unavailable
+    const store = new Map()
+    return createJSONStorage(() => ({
+      getItem: (key) => store.get(key) ?? null,
+      setItem: (key, value) => store.set(key, value),
+      removeItem: (key) => store.delete(key),
+    }))
+  }
+
+  return createJSONStorage(() => localStorage, {
+    reviver: (key, value) =>
+      typeof value === 'string' && ISO_DATE_REGEX.test(value)
+        ? new Date(value)
+        : value,
+  })
+}
 
 export const useStore = create(
   persist(store, {
-    name: 'store',
-    storage,
+    name: STORE_KEY,
+    storage: createSafeStorage(),
   }),
 )

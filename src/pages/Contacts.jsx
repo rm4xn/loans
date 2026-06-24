@@ -35,11 +35,11 @@ function Contacts() {
           <h1 className="text-2xl font-semibold tracking-tight text-base-content">
             Contacts
           </h1>
-          {contacts.length > 0 && (
+          {contacts.length > 0 ? (
             <p className="text-sm text-base-content/50 mt-1">
               {contacts.length} contact{contacts.length === 1 ? '' : 's'}
             </p>
-          )}
+          ) : null}
         </div>
         <button
           className="btn btn-primary btn-sm shadow-xs"
@@ -51,7 +51,7 @@ function Contacts() {
       </div>
 
       {/* Empty State */}
-      {sorted.length === 0 && (
+      {sorted.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-base-content/30">
           <div className="size-16 rounded-2xl bg-base-200 flex items-center justify-center mb-5">
             <Users className="size-8 stroke-1" />
@@ -63,10 +63,7 @@ function Contacts() {
             Add your first contact to start tracking loans
           </p>
         </div>
-      )}
-
-      {/* Contact List */}
-      {sorted.length > 0 && (
+      ) : (
         <div className="space-y-3">
           {sorted.map((contact) => (
             <div
@@ -114,10 +111,8 @@ function Contacts() {
       {isOpen && (
         <ContactForm
           id="contactModal"
-          onClose={() => {
-            setIsOpen(false)
-          }}
-          {...(selectedContact && { contact: selectedContact })}
+          contact={selectedContact}
+          onClose={() => setIsOpen(false)}
         />
       )}
     </>

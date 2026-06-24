@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router'
 import { ChevronRight, Plus, Wallet, CircleAlert } from 'lucide-react'
 import { useStore } from '../store'
+import { formatDate, formatDue } from '../utils/date'
 import LoanForm from '../components/LoanForm'
 
 function Home() {
@@ -18,13 +19,13 @@ function Home() {
           <h1 className="text-2xl font-semibold tracking-tight text-base-content">
             My Loans
           </h1>
-          {loans.length > 0 && (
+          {loans.length > 0 ? (
             <p className="text-sm text-base-content/50 mt-1">
               {activeCount > 0
                 ? `${activeCount} active loan${activeCount === 1 ? '' : 's'}`
                 : `${loans.length} total`}
             </p>
-          )}
+          ) : null}
         </div>
         <button
           className="btn btn-primary btn-sm shadow-xs"
@@ -42,7 +43,7 @@ function Home() {
       </div>
 
       {/* Empty State */}
-      {sorted.length === 0 && (
+      {sorted.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-base-content/30">
           <div className="size-16 rounded-2xl bg-base-200 flex items-center justify-center mb-5">
             <Wallet className="size-8 stroke-1" />
@@ -54,10 +55,7 @@ function Home() {
             Create your first loan to get started
           </p>
         </div>
-      )}
-
-      {/* Loan List */}
-      {sorted.length > 0 && (
+      ) : (
         <div className="space-y-3">
           {sorted.map((loan) => {
             const isPaid = loan.status === 'paid'
@@ -122,14 +120,12 @@ function Home() {
                   >
                     ${Number(loan.amount).toLocaleString()}
                   </div>
-                  {loan.estimatedPaymentDate && !isPaid && (
+                  {loan.estimatedPaymentDate && !isPaid ? (
                     <div className="mt-0.5 text-[11px] text-base-content/40 flex items-center gap-1 justify-end">
                       <CircleAlert className="size-3" />
-                      <span>
-                        {formatDue(loan.estimatedPaymentDate)}
-                      </span>
+                      <span>{formatDue(loan.estimatedPaymentDate)}</span>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 <ChevronRight className="size-4 shrink-0 text-base-content/20 transition-colors group-hover:text-base-content/40" />
@@ -140,31 +136,6 @@ function Home() {
       )}
     </>
   )
-}
-
-function formatDate(date) {
-  if (!date) return ''
-  const d = date instanceof Date ? date : new Date(date)
-  const diff = Date.now() - d.getTime()
-  const days = Math.floor(diff / 86400000)
-  if (days === 0) return 'Today'
-  if (days === 1) return 'Yesterday'
-  if (days < 7) return `${days} days ago`
-  if (days < 30) return `${Math.floor(days / 7)}w ago`
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`
-  return d.toLocaleDateString()
-}
-
-function formatDue(dateStr) {
-  const due = new Date(dateStr)
-  const now = new Date()
-  now.setHours(0, 0, 0, 0)
-  const diff = due.getTime() - now.getTime()
-  const days = Math.ceil(diff / 86400000)
-  if (days < 0) return `${Math.abs(days)}d overdue`
-  if (days === 0) return 'Due today'
-  if (days === 1) return 'Due tomorrow'
-  return `${days}d left`
 }
 
 export default Home
