@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
 import Contact from '../classes/Contact'
 import { X } from 'lucide-react'
 
 export default function ContactForm({ id, contact, onClose }) {
+  const { t } = useTranslation()
   const [name, setName] = useState(contact?.name || '')
   const [phoneNumber, setPhoneNumber] = useState(contact?.phoneNumber || '')
 
@@ -29,10 +31,9 @@ export default function ContactForm({ id, contact, onClose }) {
   return (
     <dialog id={id} className="modal" onClose={onClose}>
       <div className="modal-box rounded-2xl p-0 overflow-hidden max-w-sm">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
           <h3 className="text-lg font-semibold tracking-tight">
-            {contact ? 'Edit Contact' : 'New Contact'}
+            {contact ? t('Edit Contact') : t('New Contact')}
           </h3>
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost text-base-content/40 hover:text-base-content">
@@ -41,10 +42,9 @@ export default function ContactForm({ id, contact, onClose }) {
           </form>
         </div>
 
-        {/* Body */}
         <div className="px-6 pb-6 space-y-4">
           <fieldset className="fieldset">
-            <legend className="fieldset-legend">Name</legend>
+            <legend className="fieldset-legend">{t('Name')}</legend>
             <input
               type="text"
               className="input w-full"
@@ -57,7 +57,7 @@ export default function ContactForm({ id, contact, onClose }) {
           </fieldset>
 
           <fieldset className="fieldset">
-            <legend className="fieldset-legend">Phone Number</legend>
+            <legend className="fieldset-legend">{t('Phone Number')}</legend>
             <input
               type="tel"
               className="input w-full"
@@ -68,11 +68,10 @@ export default function ContactForm({ id, contact, onClose }) {
           </fieldset>
         </div>
 
-        {/* Footer */}
         <div className="flex gap-2 px-6 pb-6">
           <form method="dialog" className="flex-1">
             <button className="btn btn-block btn-ghost text-base-content/60">
-              Cancel
+              {t('Cancel')}
             </button>
           </form>
           <button
@@ -80,12 +79,11 @@ export default function ContactForm({ id, contact, onClose }) {
             onClick={handleClick}
             disabled={!name.trim()}
           >
-            {contact ? 'Save Changes' : 'Create Contact'}
+            {contact ? t('Save Changes') : t('Create Contact')}
           </button>
         </div>
       </div>
 
-      {/* Backdrop click to close */}
       <form method="dialog" className="modal-backdrop">
         <button>close</button>
       </form>

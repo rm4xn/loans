@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import i18n from '../i18n'
 
 const STORE_VERSION = 1
 const STORE_KEY = `store:v${STORE_VERSION}`
@@ -28,16 +29,20 @@ const store = (set) => ({
     set((state) => ({
       contacts: state.contacts.filter((contact) => contact.id !== id),
     })),
+  language: 'en',
+  setLanguage: (lang) =>
+    set(() => {
+      i18n.changeLanguage(lang)
+      return { language: lang }
+    }),
 })
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
 
 function createSafeStorage() {
   try {
-    // Test localStorage availability (throws in private browsing)
     localStorage.getItem('__test')
   } catch {
-    // Fallback in-memory storage when localStorage is unavailable
     const store = new Map()
     return createJSONStorage(() => ({
       getItem: (key) => store.get(key) ?? null,
@@ -54,9 +59,17 @@ function createSafeStorage() {
   })
 }
 
+// Sync i18n language when store is rehydrated from storage
+const onRehydrate = () => (state) => {
+  if (state?.language) {
+    i18n.changeLanguage(state.language)
+  }
+}
+
 export const useStore = create(
   persist(store, {
     name: STORE_KEY,
     storage: createSafeStorage(),
+    onRehydrateStorage: onRehydrate,
   }),
 )
