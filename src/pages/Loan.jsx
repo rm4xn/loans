@@ -1,7 +1,7 @@
-import { useParams } from 'react-router'
-import { ArrowLeft, Calendar, Clock } from 'lucide-react'
-import { useNavigate } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
+import { WhatsApp } from '@ridemountainpig/svgl-react'
 import { useStore } from '../store'
 import LoanForm from '../components/LoanForm'
 
@@ -119,6 +119,7 @@ function Loan() {
           className="btn btn-outline btn-block justify-start gap-3 h-12"
           onClick={() => document.getElementById('loanEditModal').showModal()}
         >
+          <Pencil className="size-4" />
           {t('Edit loan')}
         </button>
         <button
@@ -131,12 +132,14 @@ function Loan() {
             )
           }}
         >
+          <WhatsApp className="size-4" />
           {t('WhatsApp Reminder')}
         </button>
         <button
           className="btn btn-outline btn-block justify-start gap-3 h-12 text-error/70 hover:text-error hover:border-error/30"
           onClick={handleDelete}
         >
+          <Trash2 className="size-4" />
           {t('Delete loan')}
         </button>
       </div>
