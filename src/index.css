@@ -1,10 +1,87 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+@plugin "daisyui/theme" {
+  name: "loans";
+  default: true;
+  prefersdark: true;
+  color-scheme: "light";
+  --color-base-100: oklch(99% 0 0);
+  --color-base-200: oklch(97% 0 0);
+  --color-base-300: oklch(93% 0 0);
+  --color-base-content: oklch(21% 0.02 260);
+  --color-primary: oklch(52% 0.19 260);
+  --color-primary-content: oklch(97% 0 0);
+  --color-secondary: oklch(65% 0.16 260);
+  --color-secondary-content: oklch(97% 0 0);
+  --color-accent: oklch(75% 0.14 200);
+  --color-accent-content: oklch(22% 0.02 200);
+  --color-neutral: oklch(45% 0.02 260);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(68% 0.14 240);
+  --color-info-content: oklch(98% 0 0);
+  --color-success: oklch(58% 0.17 150);
+  --color-success-content: oklch(98% 0 0);
+  --color-warning: oklch(68% 0.16 80);
+  --color-warning-content: oklch(98% 0 0);
+  --color-error: oklch(58% 0.18 20);
+  --color-error-content: oklch(98% 0 0);
+  --radius-selector: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+  --background-color: oklch(98% 0.003 260);
+}
+
+:root {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background-color);
+  min-height: 100dvh;
+}
+
 .lucide {
   stroke-width: 1.5;
 }
 
 .lucide * {
   vector-effect: non-scaling-stroke;
+}
+
+/* Subtle transitions */
+.btn,
+.card,
+.dock a,
+.list-row {
+  transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(85% 0.01 260);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(75% 0.01 260);
 }

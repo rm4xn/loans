@@ -2,7 +2,7 @@ import { Outlet } from 'react-router'
 
 function BaseLayout() {
   return (
-    <main className="max-w-lg mx-auto p-4 relative">
+    <main className="mx-auto max-w-lg min-h-dvh pb-24 pt-6 px-4">
       <Outlet />
     </main>
   )

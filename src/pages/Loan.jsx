@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { Info, ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Tag, Trash, Pencil, MessageCircle } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { useStore } from '../store'
 import LoanForm from '../components/LoanForm'
@@ -25,77 +25,132 @@ function Loan() {
 
   if (!loan) {
     return (
-      <div role="alert" className="alert">
-        <Info className="stroke-info h-6 w-6 shrink-0" />
-        <span>Loan not found</span>
+      <div className="flex flex-col items-center justify-center py-24 text-base-content/30">
+        <div className="size-16 rounded-2xl bg-base-200 flex items-center justify-center mb-5">
+          <Tag className="size-8 stroke-1" />
+        </div>
+        <p className="text-lg font-medium text-base-content/40">
+          Loan not found
+        </p>
       </div>
     )
   }
 
+  const isPaid = loan.status === 'paid'
+
   return (
     <>
+      {/* Back button */}
       <button
-        className="btn btn-circle btn-ghost mb-4"
+        className="btn btn-circle btn-ghost btn-sm mb-6"
         onClick={() => navigate(-1)}
       >
-        <ArrowLeft />
+        <ArrowLeft className="size-5" />
       </button>
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-8">
-          Detalle de préstamo a {loan.contact.name}
-        </h1>
-        <div className="mb-8">
-          <p className="mb-4">
-            <strong>Monto:</strong> {loan.amount}
-          </p>
-          {loan.estimatedPaymentDate && (
-            <p className="mb-4">
-              <strong>Fecha Estimada de Pago:</strong>{' '}
-              {loan.estimatedPaymentDate}
-            </p>
-          )}
-          <p className="mb-4">
-            <strong>Fecha de Creación:</strong>{' '}
-            {loan.createdAt.toLocaleDateString()}
-          </p>
-          <div className="mb-4">
-            <strong className="pe-4">Estado:</strong>
-            <div
-              className={
-                loan.status === 'active'
-                  ? 'badge badge-soft badge-warning'
-                  : 'badge badge-soft badge-neutral'
-              }
-            >
-              {loan.status}
+
+      {/* Hero Card */}
+      <div className="bg-base-100 rounded-2xl border border-base-200/60 p-6 mb-6">
+        <div className="flex items-center gap-4 mb-5">
+          <div
+            className={
+              'flex size-14 shrink-0 items-center justify-center rounded-2xl text-xl font-semibold ' +
+              (isPaid
+                ? 'bg-base-200 text-base-content/40'
+                : 'bg-primary/10 text-primary')
+            }
+          >
+            {loan.contact.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl font-semibold tracking-tight truncate">
+              {loan.contact.name}
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span
+                className={
+                  'badge badge-sm ' +
+                  (isPaid
+                    ? 'badge-soft badge-success'
+                    : 'badge-soft badge-warning')
+                }
+              >
+                {isPaid ? 'Paid' : 'Active'}
+              </span>
+              <span className="text-xs text-base-content/40">
+                {loan.contact.phoneNumber}
+              </span>
             </div>
           </div>
         </div>
+
+        {/* Amount */}
+        <div className="mb-6">
+          <p className="text-xs text-base-content/40 font-medium uppercase tracking-widest mb-1">
+            Amount
+          </p>
+          <p className="text-3xl font-bold tracking-tight">
+            ${Number(loan.amount).toLocaleString()}
+          </p>
+        </div>
+
+        {/* Detail grid */}
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-base-200/60">
+          <div>
+            <div className="flex items-center gap-1.5 text-xs text-base-content/40 font-medium mb-1">
+              <Calendar className="size-3.5" />
+              <span>Created</span>
+            </div>
+            <p className="text-sm font-medium">
+              {loan.createdAt.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </p>
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5 text-xs text-base-content/40 font-medium mb-1">
+              <Clock className="size-3.5" />
+              <span>Due Date</span>
+            </div>
+            <p className="text-sm font-medium">
+              {loan.estimatedPaymentDate
+                ? new Date(loan.estimatedPaymentDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : '—'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="space-y-2">
         <button
-          className="btn btn-outline btn-block mb-2"
+          className="btn btn-outline btn-block justify-start gap-3 h-12"
           onClick={() => document.getElementById('loanEditModal').showModal()}
         >
+          <Pencil className="size-4" />
           Edit Loan
         </button>
         <button
-          className="btn btn-outline btn-block mb-2"
-          style={{ '--btn-color': 'var(--color-green-500)' }}
+          className="btn btn-outline btn-block justify-start gap-3 h-12"
           onClick={sendWhatsAppReminder}
         >
-          <svg fill="none" width="16" height="16" viewBox="0 0 360 362">
-            <path
-              fill="#25D366"
-              fillRule="evenodd"
-              d="M307.546 52.566C273.709 18.684 228.706.017 180.756 0 81.951 0 1.538 80.404 1.504 179.235c-.017 31.594 8.242 62.432 23.928 89.609L0 361.736l95.024-24.925c26.179 14.285 55.659 21.805 85.655 21.814h.077c98.788 0 179.21-80.413 179.244-179.244.017-47.898-18.608-92.926-52.454-126.807v-.008Zm-126.79 275.788h-.06c-26.73-.008-52.952-7.194-75.831-20.765l-5.44-3.231-56.391 14.791 15.05-54.981-3.542-5.638c-14.912-23.721-22.793-51.139-22.776-79.286.035-82.14 66.867-148.973 149.051-148.973 39.793.017 77.198 15.53 105.328 43.695 28.131 28.157 43.61 65.596 43.593 105.398-.035 82.149-66.867 148.982-148.982 148.982v.008Zm81.719-111.577c-4.478-2.243-26.497-13.073-30.606-14.568-4.108-1.496-7.09-2.243-10.073 2.243-2.982 4.487-11.568 14.577-14.181 17.559-2.613 2.991-5.226 3.361-9.704 1.117-4.477-2.243-18.908-6.97-36.02-22.226-13.313-11.878-22.304-26.54-24.916-31.027-2.613-4.486-.275-6.91 1.959-9.136 2.011-2.011 4.478-5.234 6.721-7.847 2.244-2.613 2.983-4.486 4.478-7.469 1.496-2.991.748-5.603-.369-7.847-1.118-2.243-10.073-24.289-13.812-33.253-3.636-8.732-7.331-7.546-10.073-7.692-2.613-.13-5.595-.155-8.586-.155-2.991 0-7.839 1.118-11.947 5.604-4.108 4.486-15.677 15.324-15.677 37.361s16.047 43.344 18.29 46.335c2.243 2.991 31.585 48.225 76.51 67.632 10.684 4.615 19.029 7.374 25.535 9.437 10.727 3.412 20.49 2.931 28.208 1.779 8.604-1.289 26.498-10.838 30.228-21.298 3.73-10.46 3.73-19.433 2.613-21.298-1.117-1.865-4.108-2.991-8.586-5.234l.008-.017Z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Send WhatsApp Reminder
+          <MessageCircle className="size-4 text-[#25D366]" />
+          WhatsApp Reminder
         </button>
-        <button className="btn btn-error btn-block" onClick={handleDelete}>
+        <button
+          className="btn btn-outline btn-block justify-start gap-3 h-12 text-error/70 hover:text-error hover:border-error/30"
+          onClick={handleDelete}
+        >
+          <Trash className="size-4" />
           Delete Loan
         </button>
       </div>
+
       <LoanForm
         id="loanEditModal"
         loan={loan}
