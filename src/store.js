@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import i18n from '../i18n'
+import { getNextId } from './utils/id'
 
 const STORE_VERSION = 1
 const STORE_KEY = `store:v${STORE_VERSION}`
@@ -31,7 +32,10 @@ function handleSystemChange(e) {
 
 const store = (set) => ({
   loans: [],
-  addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
+  addLoan: (loan) =>
+    set((state) => ({
+      loans: [...state.loans, { ...loan, id: getNextId(state.loans) }],
+    })),
   updateLoan: (id, updatedLoan) =>
     set((state) => ({
       loans: state.loans.map((loan) =>
@@ -42,7 +46,9 @@ const store = (set) => ({
     set((state) => ({ loans: state.loans.filter((loan) => loan.id !== id) })),
   contacts: [],
   addContact: (contact) =>
-    set((state) => ({ contacts: [...state.contacts, contact] })),
+    set((state) => ({
+      contacts: [...state.contacts, { ...contact, id: getNextId(state.contacts) }],
+    })),
   updateContact: (id, updatedContact) =>
     set((state) => ({
       contacts: state.contacts.map((contact) =>

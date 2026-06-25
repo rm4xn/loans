@@ -1,6 +1,5 @@
 class Loan {
   constructor(amount, contact, estimatedPaymentDate = null) {
-    this.id = crypto.randomUUID()
     this.amount = amount
     this.contact = contact
     this.paymentDate = null
