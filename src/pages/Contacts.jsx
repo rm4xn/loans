@@ -68,7 +68,7 @@ function Contacts() {
           {sorted.map((contact) => (
             <div
               key={contact.id}
-              className="group flex items-center gap-4 bg-base-100 rounded-xl px-5 py-4 border border-base-200/50 transition-all duration-200 hover:border-primary/20 hover:shadow-sm"
+              className="flex items-center gap-4 bg-base-100 rounded-xl px-5 py-4 border border-base-200/50 transition-all duration-200 hover:border-primary/20 hover:shadow-sm"
             >
               <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-sm font-semibold text-secondary">
                 {contact.name.charAt(0).toUpperCase()}
@@ -84,18 +84,18 @@ function Contacts() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
-                  className="btn btn-square btn-ghost btn-sm size-9"
+                  className="btn btn-square btn-ghost btn-sm size-9 text-base-content/40 hover:text-base-content"
                   onClick={() => handleEditContact(contact)}
-                  title={t('Edit contact')}
+                  aria-label={t('Edit contact')}
                 >
                   <SquarePen className="size-4" />
                 </button>
                 <button
-                  className="btn btn-square btn-ghost btn-sm size-9 text-error/70 hover:text-error"
+                  className="btn btn-square btn-ghost btn-sm size-9 text-error/50 hover:text-error"
                   onClick={() => handleDeleteContact(contact.id)}
-                  title={t('Delete contact')}
+                  aria-label={t('Delete contact')}
                 >
                   <Trash className="size-4" />
                 </button>
