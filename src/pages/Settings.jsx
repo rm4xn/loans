@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
-import { Globe, Sun, Moon, Monitor, Wallet } from 'lucide-react'
+import { Globe, Sun, Moon, Monitor, Wallet, MessageSquareText } from 'lucide-react'
 import { CURRENCIES } from '../utils/currency'
 
 const LANGUAGES = [
@@ -22,6 +22,8 @@ function Settings() {
   const setDefaultCurrency = useStore((state) => state.setDefaultCurrency)
   const theme = useStore((state) => state.theme)
   const setTheme = useStore((state) => state.setTheme)
+  const whatsappMessage = useStore((state) => state.whatsappMessage)
+  const setWhatsappMessage = useStore((state) => state.setWhatsappMessage)
 
   return (
     <>
@@ -122,6 +124,31 @@ function Settings() {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="card card-border bg-base-100 mt-4">
+        <div className="card-body">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <MessageSquareText className="size-5 text-primary" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">{t('WhatsApp Message')}</p>
+              <p className="text-xs text-base-content/40 mt-0.5">
+                {t('Customize the WhatsApp reminder template')}
+              </p>
+            </div>
+          </div>
+
+          <textarea
+            className="textarea textarea-bordered w-full text-sm leading-relaxed min-h-24"
+            value={whatsappMessage}
+            onChange={(e) => setWhatsappMessage(e.target.value)}
+          />
+          <p className="text-xs text-base-content/30 mt-2">
+            {t('Use {{amount}} and {{currency}} as placeholders')}
+          </p>
         </div>
       </div>
     </>

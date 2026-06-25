@@ -11,6 +11,7 @@ function Loan() {
   const { id } = useParams()
   const loan = useStore((state) => state.loans.find((loan) => loan.id === Number(id)))
   const deleteLoan = useStore((state) => state.deleteLoan)
+  const whatsappMessage = useStore((state) => state.whatsappMessage)
   const navigate = useNavigate()
 
   const handleDelete = () => {
@@ -126,7 +127,9 @@ function Loan() {
         <button
           className="btn btn-outline btn-block justify-start gap-3 h-12"
           onClick={() => {
-            const message = t('WhatsApp reminder message', { amount: loan.amount })
+            const message = whatsappMessage
+              .replace('{{amount}}', loan.amount)
+              .replace('{{currency}}', getCurrencySymbol(loan.currency))
             window.open(
               `https://wa.me/${loan.contact.phoneNumber}?text=${encodeURIComponent(message)}`,
               '_blank',

@@ -67,6 +67,8 @@ const store = (set) => ({
     }),
   defaultCurrency: 'USD',
   setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
+  whatsappMessage: 'Reminder: You are owed {{currency}}{{amount}} by me. Please pay back as soon as possible.',
+  setWhatsappMessage: (message) => set({ whatsappMessage: message }),
   theme: 'system',
   setTheme: (theme) =>
     set(() => {

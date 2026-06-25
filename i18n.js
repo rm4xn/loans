@@ -78,6 +78,9 @@ const resources = {
       'Change the app language': 'Change the app language',
       'Default Currency': 'Default Currency',
       'Set the default currency for new loans': 'Set the default currency for new loans',
+      'WhatsApp Message': 'WhatsApp Message',
+      'Customize the WhatsApp reminder template': 'Customize the WhatsApp reminder template',
+      'Use {{amount}} and {{currency}} as placeholders': 'Use {{amount}} and {{currency}} as placeholders',
 
       // Logged out
       'Logged out': 'Logged out',
@@ -166,6 +169,9 @@ const resources = {
       'Change the app language': 'Cambiar el idioma de la aplicación',
       'Default Currency': 'Moneda por Defecto',
       'Set the default currency for new loans': 'Establecer la moneda por defecto para nuevos préstamos',
+      'WhatsApp Message': 'Mensaje de WhatsApp',
+      'Customize the WhatsApp reminder template': 'Personaliza la plantilla del recordatorio de WhatsApp',
+      'Use {{amount}} and {{currency}} as placeholders': 'Usa {{amount}} y {{currency}} como marcadores de posición',
 
       // Logged out
       'Logged out': 'Sesión cerrada',
