@@ -1,6 +1,20 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      try {
+        const storeRaw = localStorage.getItem('store:v1')
+        const theme = JSON.parse(storeRaw || '{}').theme
+        document.documentElement.setAttribute(
+          'data-theme',
+          theme === 'system' || !theme
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : theme,
+        )
+      } catch (e) {}
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

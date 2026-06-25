@@ -5,6 +5,30 @@ import i18n from '../i18n'
 const STORE_VERSION = 1
 const STORE_KEY = `store:v${STORE_VERSION}`
 
+let mediaQuery = null
+
+function applyTheme(theme) {
+  if (theme === 'system') {
+    theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light'
+    mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    mediaQuery.addEventListener('change', handleSystemChange)
+  } else if (mediaQuery) {
+    mediaQuery.removeEventListener('change', handleSystemChange)
+    mediaQuery = null
+  }
+
+  document.documentElement.setAttribute('data-theme', theme)
+}
+
+function handleSystemChange(e) {
+  document.documentElement.setAttribute(
+    'data-theme',
+    e.matches ? 'dark' : 'light',
+  )
+}
+
 const store = (set) => ({
   loans: [],
   addLoan: (loan) => set((state) => ({ loans: [...state.loans, loan] })),
@@ -35,6 +59,12 @@ const store = (set) => ({
       i18n.changeLanguage(lang)
       return { language: lang }
     }),
+  theme: 'system',
+  setTheme: (theme) =>
+    set(() => {
+      applyTheme(theme)
+      return { theme }
+    }),
 })
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
@@ -59,10 +89,15 @@ function createSafeStorage() {
   })
 }
 
-// Sync i18n language when store is rehydrated from storage
+// Sync i18n language and theme when store is rehydrated from storage
 const onRehydrate = () => (state) => {
   if (state?.language) {
     i18n.changeLanguage(state.language)
+  }
+  if (state?.theme) {
+    applyTheme(state.theme)
+  } else {
+    applyTheme('system')
   }
 }
 
