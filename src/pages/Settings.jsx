@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
-import { Globe, Sun, Moon, Monitor } from 'lucide-react'
+import { Globe, Sun, Moon, Monitor, Wallet } from 'lucide-react'
+import { CURRENCIES } from '../utils/currency'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -17,6 +18,8 @@ function Settings() {
   const { t } = useTranslation()
   const language = useStore((state) => state.language)
   const setLanguage = useStore((state) => state.setLanguage)
+  const defaultCurrency = useStore((state) => state.defaultCurrency)
+  const setDefaultCurrency = useStore((state) => state.setDefaultCurrency)
   const theme = useStore((state) => state.theme)
   const setTheme = useStore((state) => state.setTheme)
 
@@ -59,6 +62,34 @@ function Settings() {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="card card-border bg-base-100 mb-4">
+        <div className="card-body">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <Wallet className="size-5 text-primary" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">{t('Default Currency')}</p>
+              <p className="text-xs text-base-content/40 mt-0.5">
+                {t('Set the default currency for new loans')}
+              </p>
+            </div>
+          </div>
+
+          <select
+            className="select w-full"
+            value={defaultCurrency}
+            onChange={(e) => setDefaultCurrency(e.target.value)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.symbol} — {c.label} ({c.code})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

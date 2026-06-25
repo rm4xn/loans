@@ -3,6 +3,7 @@ import { Plus, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
 import { formatDate, formatDue } from '../utils/date'
+import { getCurrencySymbol } from '../utils/currency'
 import LoanForm from '../components/LoanForm'
 
 function Home() {
@@ -115,7 +116,7 @@ function Home() {
                       (isPaid ? 'text-base-content/30' : 'text-base-content')
                     }
                   >
-                    ${Number(loan.amount).toLocaleString()}
+                    {getCurrencySymbol(loan.currency)}{Number(loan.amount).toLocaleString()}
                   </span>
                   {loan.estimatedPaymentDate && !isPaid ? (
                     <div className="mt-0.5 text-[11px] text-base-content/40">

@@ -65,6 +65,8 @@ const store = (set) => ({
       i18n.changeLanguage(lang)
       return { language: lang }
     }),
+  defaultCurrency: 'USD',
+  setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
   theme: 'system',
   setTheme: (theme) =>
     set(() => {

@@ -76,6 +76,8 @@ const resources = {
       'Configure your preferences': 'Configure your preferences',
       'Language': 'Language',
       'Change the app language': 'Change the app language',
+      'Default Currency': 'Default Currency',
+      'Set the default currency for new loans': 'Set the default currency for new loans',
 
       // Logged out
       'Logged out': 'Logged out',
@@ -162,6 +164,8 @@ const resources = {
       'Configure your preferences': 'Configura tus preferencias',
       'Language': 'Idioma',
       'Change the app language': 'Cambiar el idioma de la aplicación',
+      'Default Currency': 'Moneda por Defecto',
+      'Set the default currency for new loans': 'Establecer la moneda por defecto para nuevos préstamos',
 
       // Logged out
       'Logged out': 'Sesión cerrada',

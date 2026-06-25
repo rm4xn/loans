@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
 import { WhatsApp } from '@ridemountainpig/svgl-react'
 import { useStore } from '../store'
+import { getCurrencySymbol } from '../utils/currency'
 import LoanForm from '../components/LoanForm'
 
 function Loan() {
@@ -79,7 +80,7 @@ function Loan() {
           {t('Loan amount')}
         </p>
         <p className="text-4xl font-bold tracking-tight text-base-content mb-6">
-          ${Number(loan.amount).toLocaleString()}
+          {getCurrencySymbol(loan.currency)}{Number(loan.amount).toLocaleString()}
         </p>
 
         <div className="grid grid-cols-2 gap-4 pt-5 border-t border-base-200/50">

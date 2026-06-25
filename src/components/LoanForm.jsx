@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import Loan from '../classes/Loan'
 import { useStore } from '../store'
+import { CURRENCIES } from '../utils/currency'
 
 export default function LoanForm(props) {
   const { t } = useTranslation()
@@ -14,6 +15,8 @@ export default function LoanForm(props) {
   const filteredContacts = contacts.filter((c) =>
     c.name.toLowerCase().includes(contactSearch.toLowerCase()),
   )
+  const defaultCurrency = useStore((state) => state.defaultCurrency)
+  const [currency, setCurrency] = useState(props.loan?.currency ?? defaultCurrency)
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
     props.loan?.estimatedPaymentDate ?? '',
   )
@@ -25,10 +28,11 @@ export default function LoanForm(props) {
       if (props.loan) {
         updateLoan(props.loan.id, {
           amount,
+          currency,
           estimatedPaymentDate: estimatedPaymentDate,
         })
       } else {
-        const loan = new Loan(amount, contact, estimatedPaymentDate)
+        const loan = new Loan(amount, contact, estimatedPaymentDate, currency)
         addLoan(loan)
       }
       props.onClose()
@@ -104,18 +108,31 @@ export default function LoanForm(props) {
           )}
 
           <fieldset className="fieldset">
-            <legend className="fieldset-legend">{t('Amount ($)')}</legend>
-            <input
-              type="number"
-              className="input w-full"
-              placeholder="0.00"
-              min="0"
-              step="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              autoFocus={isEditing}
-              required
-            />
+            <legend className="fieldset-legend">{t('Amount')}</legend>
+            <div className="join w-full">
+              <input
+                type="number"
+                className="input join-item flex-1"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                autoFocus={isEditing}
+                required
+              />
+              <select
+                className="select join-item w-28"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code}
+                  </option>
+                ))}
+              </select>
+            </div>
           </fieldset>
 
           <fieldset className="fieldset">
