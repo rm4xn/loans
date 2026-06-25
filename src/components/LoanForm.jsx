@@ -8,11 +8,15 @@ export default function LoanForm(props) {
   const { t } = useTranslation()
   const [amount, setAmount] = useState(props.loan?.amount ?? '')
   const [contact, setContact] = useState(props.loan?.contact ?? null)
-  const [contactInput, setContactInput] = useState(props.loan?.contact?.name ?? '')
+  const [contactSearch, setContactSearch] = useState(props.loan?.contact?.name ?? '')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const contacts = useStore((state) => state.contacts)
+  const filteredContacts = contacts.filter((c) =>
+    c.name.toLowerCase().includes(contactSearch.toLowerCase()),
+  )
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
     props.loan?.estimatedPaymentDate ?? '',
   )
-  const contacts = useStore((state) => state.contacts)
   const addLoan = useStore((state) => state.addLoan)
   const updateLoan = useStore((state) => state.updateLoan)
 
@@ -54,37 +58,48 @@ export default function LoanForm(props) {
           {!isEditing && (
             <fieldset className="fieldset">
               <legend className="fieldset-legend">{t('Contact')}</legend>
-              <input
-                id="contact-input"
-                type="text"
-                className="input w-full"
-                placeholder={t('Search contacts...')}
-                list="contacts"
-                value={contactInput}
-                onChange={(e) => {
-                  setContactInput(e.target.value)
-                  const selected = contacts.find(
-                    (c) => c.name === e.target.value,
-                  )
-                  if (selected) setContact(selected)
-                }}
-                onBlur={(e) => {
-                  const selectedContact = contacts.find(
-                    (c) => c.name === e.target.value,
-                  )
-                  if (!selectedContact) {
-                    setContactInput(contact ? contact.name : '')
-                    return
-                  }
-                  setContact(selectedContact)
-                }}
-                required
-              />
-              <datalist id="contacts">
-                {contacts.map((contact) => (
-                  <option key={contact.id} value={contact.name} />
-                ))}
-              </datalist>
+              <div className="dropdown w-full">
+                <input
+                  type="text"
+                  className="input w-full"
+                  placeholder={t('Search contacts...')}
+                  value={contactSearch}
+                  onChange={(e) => {
+                    setContactSearch(e.target.value)
+                    setContact(null)
+                    setShowDropdown(true)
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  autoComplete="off"
+                  required
+                />
+                {showDropdown && filteredContacts.length > 0 && (
+                  <ul className="dropdown-content menu w-full bg-base-100 rounded-box shadow-sm mt-2 p-2 border border-base-200/50 z-10">
+                    {filteredContacts.map((c) => (
+                      <li key={c.id}>
+                        <button
+                          className="flex items-center gap-3 py-2"
+                          onPointerDown={(e) => {
+                            e.preventDefault()
+                            setContact(c)
+                            setContactSearch(c.name)
+                            setShowDropdown(false)
+                          }}
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-full bg-secondary/10 text-xs font-semibold text-secondary shrink-0">
+                            {c.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0 flex-1 text-left">
+                            <p className="text-sm font-medium truncate">{c.name}</p>
+                            <p className="text-xs text-base-content/40 truncate">{c.phoneNumber}</p>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </fieldset>
           )}
 
