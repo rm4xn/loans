@@ -8,7 +8,7 @@ import LoanForm from '../components/LoanForm'
 function Loan() {
   const { t } = useTranslation()
   const { id } = useParams()
-  const loan = useStore((state) => state.loans.find((loan) => loan.id === id))
+  const loan = useStore((state) => state.loans.find((loan) => loan.id === Number(id)))
   const deleteLoan = useStore((state) => state.deleteLoan)
   const navigate = useNavigate()
 
