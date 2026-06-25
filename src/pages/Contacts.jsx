@@ -1,8 +1,9 @@
 import { Trash, SquarePen, Phone, Plus, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useStore } from '../store'
-import ContactForm from '../components/ContactForm'
 import { useState } from 'react'
+import { useStore } from '../store'
+import EmptyState from '../components/EmptyState'
+import ContactForm from '../components/ContactForm'
 
 function Contacts() {
   const { t } = useTranslation()
@@ -52,17 +53,11 @@ function Contacts() {
       </div>
 
       {sorted.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-base-content/30">
-          <div className="size-16 rounded-2xl bg-base-200 flex items-center justify-center mb-5">
-            <Users className="size-8 stroke-1" />
-          </div>
-          <p className="text-lg font-medium text-base-content/40">
-            {t('No contacts yet')}
-          </p>
-          <p className="text-sm mt-1.5 text-base-content/30">
-            {t('Add your first contact to start tracking loans')}
-          </p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title={t('No contacts yet')}
+          description={t('Add your first contact to start tracking loans')}
+        />
       ) : (
         <div className="space-y-3">
           {sorted.map((contact) => (
@@ -108,7 +103,6 @@ function Contacts() {
       {isOpen && (
         <ContactForm
           key={selectedContact?.id ?? 'new'}
-          id="contactModal"
           contact={selectedContact}
           onClose={() => setIsOpen(false)}
         />

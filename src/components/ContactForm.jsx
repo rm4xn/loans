@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
 import Contact from '../classes/Contact'
 import { X } from 'lucide-react'
 
-export default function ContactForm({ id, contact, onClose }) {
+export default function ContactForm({ contact, onClose }) {
   const { t } = useTranslation()
+  const ref = useRef(null)
   const [name, setName] = useState(contact?.name || '')
   const [phoneNumber, setPhoneNumber] = useState(contact?.phoneNumber || '')
 
@@ -13,12 +14,12 @@ export default function ContactForm({ id, contact, onClose }) {
   const updateContact = useStore((state) => state.updateContact)
 
   useEffect(() => {
-    document.getElementById(id).showModal()
-  }, [id])
+    ref.current?.showModal()
+  }, [])
 
   function handleClick() {
     if (!name.trim()) return
-    document.getElementById(id).close()
+    ref.current?.close()
     const formData = { name: name.trim(), phoneNumber: phoneNumber.trim() }
     if (contact) {
       updateContact(contact.id, formData)
@@ -29,7 +30,7 @@ export default function ContactForm({ id, contact, onClose }) {
   }
 
   return (
-    <dialog id={id} className="modal" onClose={onClose}>
+    <dialog ref={ref} className="modal" onClose={onClose}>
       <div className="modal-box rounded-2xl p-0 overflow-hidden max-w-sm">
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
           <h3 className="text-lg font-semibold tracking-tight">

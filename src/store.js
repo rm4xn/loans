@@ -1,34 +1,12 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
 import i18n from '../i18n'
 import { getNextId } from './utils/id'
+import { applyTheme } from './utils/theme'
+import { createSafeStorage } from './utils/storage'
 
 const STORE_VERSION = 1
 const STORE_KEY = `store:v${STORE_VERSION}`
-
-let mediaQuery = null
-
-function applyTheme(theme) {
-  if (theme === 'system') {
-    theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
-    mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    mediaQuery.addEventListener('change', handleSystemChange)
-  } else if (mediaQuery) {
-    mediaQuery.removeEventListener('change', handleSystemChange)
-    mediaQuery = null
-  }
-
-  document.documentElement.setAttribute('data-theme', theme)
-}
-
-function handleSystemChange(e) {
-  document.documentElement.setAttribute(
-    'data-theme',
-    e.matches ? 'dark' : 'light',
-  )
-}
 
 const store = (set) => ({
   loans: [],
@@ -47,7 +25,10 @@ const store = (set) => ({
   contacts: [],
   addContact: (contact) =>
     set((state) => ({
-      contacts: [...state.contacts, { ...contact, id: getNextId(state.contacts) }],
+      contacts: [
+        ...state.contacts,
+        { ...contact, id: getNextId(state.contacts) },
+      ],
     })),
   updateContact: (id, updatedContact) =>
     set((state) => ({
@@ -67,7 +48,8 @@ const store = (set) => ({
     }),
   defaultCurrency: 'USD',
   setDefaultCurrency: (currency) => set({ defaultCurrency: currency }),
-  whatsappMessage: 'Reminder: You are owed {{currency}}{{amount}} by me. Please pay back as soon as possible.',
+  whatsappMessage:
+    'Reminder: You are owed {{currency}}{{amount}} by me. Please pay back as soon as possible.',
   setWhatsappMessage: (message) => set({ whatsappMessage: message }),
   theme: 'system',
   setTheme: (theme) =>
@@ -77,29 +59,6 @@ const store = (set) => ({
     }),
 })
 
-const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
-
-function createSafeStorage() {
-  try {
-    localStorage.getItem('__test')
-  } catch {
-    const store = new Map()
-    return createJSONStorage(() => ({
-      getItem: (key) => store.get(key) ?? null,
-      setItem: (key, value) => store.set(key, value),
-      removeItem: (key) => store.delete(key),
-    }))
-  }
-
-  return createJSONStorage(() => localStorage, {
-    reviver: (key, value) =>
-      typeof value === 'string' && ISO_DATE_REGEX.test(value)
-        ? new Date(value)
-        : value,
-  })
-}
-
-// Sync i18n language and theme when store is rehydrated from storage
 const onRehydrate = () => (state) => {
   if (state?.language) {
     i18n.changeLanguage(state.language)

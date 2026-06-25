@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useStore } from '../store'
 import { Globe, Sun, Moon, Monitor, Wallet, MessageSquareText } from 'lucide-react'
 import { CURRENCIES } from '../utils/currency'
+import SettingsCard from '../components/SettingsCard'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -36,121 +37,81 @@ function Settings() {
         </p>
       </div>
 
-      <div className="card card-border bg-base-100 mb-4">
-        <div className="card-body">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Globe className="size-5 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{t('Language')}</p>
-              <p className="text-xs text-base-content/40 mt-0.5">
-                {t('Change the app language')}
-              </p>
-            </div>
-          </div>
-
-          <div className="join join-horizontal w-full">
-            {LANGUAGES.map((lang) => (
-              <button
-                key={lang.code}
-                className={
-                  'btn join-item flex-1 btn-sm' +
-                  (language === lang.code ? ' btn-primary' : '')
-                }
-                onClick={() => setLanguage(lang.code)}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
+      <SettingsCard
+        icon={Globe}
+        title={t('Language')}
+        description={t('Change the app language')}
+      >
+        <div className="join join-horizontal w-full">
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              className={
+                'btn join-item flex-1 btn-sm' +
+                (language === lang.code ? ' btn-primary' : '')
+              }
+              onClick={() => setLanguage(lang.code)}
+            >
+              {lang.label}
+            </button>
+          ))}
         </div>
-      </div>
+      </SettingsCard>
 
-      <div className="card card-border bg-base-100 mb-4">
-        <div className="card-body">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Wallet className="size-5 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{t('Default Currency')}</p>
-              <p className="text-xs text-base-content/40 mt-0.5">
-                {t('Set the default currency for new loans')}
-              </p>
-            </div>
-          </div>
+      <SettingsCard
+        icon={Wallet}
+        title={t('Default Currency')}
+        description={t('Set the default currency for new loans')}
+      >
+        <select
+          className="select w-full"
+          value={defaultCurrency}
+          onChange={(e) => setDefaultCurrency(e.target.value)}
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.symbol} — {c.label} ({c.code})
+            </option>
+          ))}
+        </select>
+      </SettingsCard>
 
-          <select
-            className="select w-full"
-            value={defaultCurrency}
-            onChange={(e) => setDefaultCurrency(e.target.value)}
-          >
-            {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.symbol} — {c.label} ({c.code})
-              </option>
-            ))}
-          </select>
+      <SettingsCard
+        icon={Sun}
+        title={t('Theme')}
+        description={t('Choose between system, light or dark')}
+      >
+        <div className="join join-horizontal w-full">
+          {THEMES.map(({ key, icon: Icon, label }) => (
+            <button
+              key={key}
+              className={
+                'btn join-item flex-1 btn-sm' +
+                (theme === key ? ' btn-primary' : '')
+              }
+              onClick={() => setTheme(key)}
+            >
+              <Icon className="size-4" />
+              {t(label)}
+            </button>
+          ))}
         </div>
-      </div>
+      </SettingsCard>
 
-      <div className="card card-border bg-base-100">
-        <div className="card-body">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <Sun className="size-5 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{t('Theme')}</p>
-              <p className="text-xs text-base-content/40 mt-0.5">
-                {t('Choose between system, light or dark')}
-              </p>
-            </div>
-          </div>
-
-          <div className="join join-horizontal w-full">
-            {THEMES.map(({ key, icon: Icon, label }) => (
-              <button
-                key={key}
-                className={
-                  'btn join-item flex-1 btn-sm' +
-                  (theme === key ? ' btn-primary' : '')
-                }
-                onClick={() => setTheme(key)}
-              >
-                <Icon className="size-4" />
-                {t(label)}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="card card-border bg-base-100 mt-4">
-        <div className="card-body">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <MessageSquareText className="size-5 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">{t('WhatsApp Message')}</p>
-              <p className="text-xs text-base-content/40 mt-0.5">
-                {t('Customize the WhatsApp reminder template')}
-              </p>
-            </div>
-          </div>
-
-          <textarea
-            className="textarea textarea-bordered w-full text-sm leading-relaxed min-h-24"
-            value={whatsappMessage}
-            onChange={(e) => setWhatsappMessage(e.target.value)}
-          />
-          <p className="text-xs text-base-content/30 mt-2">
-            {t('Use {{amount}} and {{currency}} as placeholders')}
-          </p>
-        </div>
-      </div>
+      <SettingsCard
+        icon={MessageSquareText}
+        title={t('WhatsApp Message')}
+        description={t('Customize the WhatsApp reminder template')}
+      >
+        <textarea
+          className="textarea textarea-bordered w-full text-sm leading-relaxed min-h-24"
+          value={whatsappMessage}
+          onChange={(e) => setWhatsappMessage(e.target.value)}
+        />
+        <p className="text-xs text-base-content/30 mt-2">
+          {t('Use {{amount}} and {{currency}} as placeholders')}
+        </p>
+      </SettingsCard>
     </>
   )
 }
