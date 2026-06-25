@@ -83,7 +83,6 @@ src/
 - **IDs numéricos auto-incrementales** (`src/utils/id.js`).
 - **Persistencia:** Zustand con middleware `persist` y clave `store:v1` en `localStorage`. Incluye un `reviver` personalizado que restaura cadenas ISO 8601 a objetos `Date`. Fallback a memoria si `localStorage` no está disponible.
 - **Tema:** se aplica con `data-theme` en `<html>`; un script inline en `index.html` evita el flash de contenido antes de que React hidrate. El modo sistema escucha `prefers-color-scheme` en tiempo real.
-- **Sin tests, sin formateador de código.**
 
 ## Despliegue en Vercel
 
