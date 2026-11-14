@@ -1,6 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { useStore } from '../store'
-import { Globe, Sun, Moon, Monitor, Wallet, MessageSquareText } from 'lucide-react'
+import { useSettingsStore } from '../stores/settings'
+import {
+  Globe,
+  Sun,
+  Moon,
+  Monitor,
+  Wallet,
+  MessageSquareText,
+} from 'lucide-react'
 import { CURRENCIES } from '../utils/currency'
 import SettingsCard from '../components/SettingsCard'
 
@@ -17,14 +24,16 @@ const THEMES = [
 
 function Settings() {
   const { t } = useTranslation()
-  const language = useStore((state) => state.language)
-  const setLanguage = useStore((state) => state.setLanguage)
-  const defaultCurrency = useStore((state) => state.defaultCurrency)
-  const setDefaultCurrency = useStore((state) => state.setDefaultCurrency)
-  const theme = useStore((state) => state.theme)
-  const setTheme = useStore((state) => state.setTheme)
-  const whatsappMessage = useStore((state) => state.whatsappMessage)
-  const setWhatsappMessage = useStore((state) => state.setWhatsappMessage)
+  const {
+    language,
+    setLanguage,
+    defaultCurrency,
+    setDefaultCurrency,
+    theme,
+    setTheme,
+    whatsappMessage,
+    setWhatsappMessage,
+  } = useSettingsStore()
 
   return (
     <>

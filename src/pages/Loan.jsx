@@ -2,16 +2,19 @@ import { useParams, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
 import { WhatsApp } from '@ridemountainpig/svgl-react'
-import { useStore } from '../store'
+import { useLoansStore } from '../stores/loans'
+import { useSettingsStore } from '../stores/settings'
 import { getCurrencySymbol } from '../utils/currency'
 import LoanForm from '../components/LoanForm'
 
 function Loan() {
   const { t } = useTranslation()
   const { id } = useParams()
-  const loan = useStore((state) => state.loans.find((loan) => loan.id === Number(id)))
-  const deleteLoan = useStore((state) => state.deleteLoan)
-  const whatsappMessage = useStore((state) => state.whatsappMessage)
+  const [loan, deleteLoan] = (() => {
+    const { items, delete: deleteLoan } = useLoansStore()
+    return [items.find((loan) => loan.id === Number(id)), deleteLoan]
+  })()
+  const whatsappMessage = useSettingsStore((state) => state.whatsappMessage)
   const navigate = useNavigate()
 
   const handleDelete = () => {
@@ -81,7 +84,8 @@ function Loan() {
           {t('Loan amount')}
         </p>
         <p className="text-4xl font-bold tracking-tight text-base-content mb-6">
-          {getCurrencySymbol(loan.currency)}{Number(loan.amount).toLocaleString()}
+          {getCurrencySymbol(loan.currency)}
+          {Number(loan.amount).toLocaleString()}
         </p>
 
         <div className="grid grid-cols-2 gap-4 pt-5 border-t border-base-200/50">
@@ -105,11 +109,14 @@ function Loan() {
             </div>
             <p className="text-sm font-medium">
               {loan.estimatedPaymentDate
-                ? new Date(loan.estimatedPaymentDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })
+                ? new Date(loan.estimatedPaymentDate).toLocaleDateString(
+                    'en-US',
+                    {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    },
+                  )
                 : '—'}
             </p>
           </div>

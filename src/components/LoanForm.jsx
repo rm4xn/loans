@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import Loan from '../classes/Loan'
-import { useStore } from '../store'
+import { useLoansStore } from '../stores/loans'
+import { useContactsStore } from '../stores/contacts'
+import { useSettingsStore } from '../stores/settings'
 import { CURRENCIES } from '../utils/currency'
 
 export default function LoanForm(props) {
@@ -13,19 +15,20 @@ export default function LoanForm(props) {
     props.loan?.contact?.name ?? '',
   )
   const [showDropdown, setShowDropdown] = useState(false)
-  const contacts = useStore((state) => state.contacts)
+
+  const contacts = useContactsStore((state) => state.items)
+  const defaultCurrency = useSettingsStore((state) => state.defaultCurrency)
+  const { add: addLoan, update: updateLoan } = useLoansStore()
+
   const filteredContacts = contacts.filter((c) =>
     c.name.toLowerCase().includes(contactSearch.toLowerCase()),
   )
-  const defaultCurrency = useStore((state) => state.defaultCurrency)
   const [currency, setCurrency] = useState(
     props.loan?.currency ?? defaultCurrency,
   )
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
     props.loan?.estimatedPaymentDate ?? '',
   )
-  const addLoan = useStore((state) => state.addLoan)
-  const updateLoan = useStore((state) => state.updateLoan)
 
   function handleClick() {
     if (amount && (contact || props.loan)) {
@@ -52,7 +55,7 @@ export default function LoanForm(props) {
     <dialog id={props.id} className="modal">
       <div className="modal-box rounded-2xl p-0 overflow-hidden max-w-sm">
         <div className="flex items-center px-6 pt-6 pb-4">
-          <div className='flex flex-1 items-center justify-between'>
+          <div className="flex flex-1 items-center justify-between">
             <h3 className="text-lg font-semibold tracking-tight">
               {isEditing ? t('Edit Loan') : t('New Loan')}
             </h3>

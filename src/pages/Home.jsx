@@ -1,13 +1,13 @@
 import { Plus, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useStore } from '../store'
+import { useLoansStore } from '../stores/loans'
 import EmptyState from '../components/EmptyState'
 import LoanCard from '../components/LoanCard'
 import LoanForm from '../components/LoanForm'
 
 function Home() {
   const { t } = useTranslation()
-  const loans = useStore((state) => state.loans)
+  const loans = useLoansStore((state) => state.items)
 
   const sorted = [...loans].sort((a, b) => b.createdAt - a.createdAt)
   const activeCount = loans.filter((l) => l.status === 'active').length

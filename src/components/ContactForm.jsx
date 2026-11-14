@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useStore } from '../store'
+import { useContactsStore } from '../stores/contacts'
 import Contact from '../classes/Contact'
 import { X } from 'lucide-react'
 
@@ -9,9 +9,7 @@ export default function ContactForm({ contact, onClose }) {
   const ref = useRef(null)
   const [name, setName] = useState(contact?.name || '')
   const [phoneNumber, setPhoneNumber] = useState(contact?.phoneNumber || '')
-
-  const addContact = useStore((state) => state.addContact)
-  const updateContact = useStore((state) => state.updateContact)
+  const { add: addContact, update: updateContact } = useContactsStore()
 
   useEffect(() => {
     ref.current?.showModal()

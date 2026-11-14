@@ -1,14 +1,13 @@
 import { Trash, SquarePen, Phone, Plus, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { useStore } from '../store'
+import { useContactsStore } from '../stores/contacts'
 import EmptyState from '../components/EmptyState'
 import ContactForm from '../components/ContactForm'
 
 function Contacts() {
   const { t } = useTranslation()
-  const contacts = useStore((state) => state.contacts)
-  const deleteContact = useStore((state) => state.deleteContact)
+  const { items: contacts, delete: deleteContact } = useContactsStore()
   const [selectedContact, setSelectedContact] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
 
