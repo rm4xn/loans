@@ -9,14 +9,18 @@ export default function LoanForm(props) {
   const { t } = useTranslation()
   const [amount, setAmount] = useState(props.loan?.amount ?? '')
   const [contact, setContact] = useState(props.loan?.contact ?? null)
-  const [contactSearch, setContactSearch] = useState(props.loan?.contact?.name ?? '')
+  const [contactSearch, setContactSearch] = useState(
+    props.loan?.contact?.name ?? '',
+  )
   const [showDropdown, setShowDropdown] = useState(false)
   const contacts = useStore((state) => state.contacts)
   const filteredContacts = contacts.filter((c) =>
     c.name.toLowerCase().includes(contactSearch.toLowerCase()),
   )
   const defaultCurrency = useStore((state) => state.defaultCurrency)
-  const [currency, setCurrency] = useState(props.loan?.currency ?? defaultCurrency)
+  const [currency, setCurrency] = useState(
+    props.loan?.currency ?? defaultCurrency,
+  )
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
     props.loan?.estimatedPaymentDate ?? '',
   )
@@ -47,10 +51,27 @@ export default function LoanForm(props) {
   return (
     <dialog id={props.id} className="modal">
       <div className="modal-box rounded-2xl p-0 overflow-hidden max-w-sm">
-        <div className="flex items-center justify-between px-6 pt-6 pb-4">
-          <h3 className="text-lg font-semibold tracking-tight">
-            {isEditing ? t('Edit Loan') : t('New Loan')}
-          </h3>
+        <div className="flex items-center px-6 pt-6 pb-4">
+          <div className='flex flex-1 items-center justify-between'>
+            <h3 className="text-lg font-semibold tracking-tight">
+              {isEditing ? t('Edit Loan') : t('New Loan')}
+            </h3>
+            <div className="tabs tabs-box">
+              <input
+                type="radio"
+                name="my_tabs_1"
+                className="tab"
+                aria-label={t('I lent')}
+                defaultChecked
+              />
+              <input
+                type="radio"
+                name="my_tabs_1"
+                className="tab"
+                aria-label={t('I borrowed')}
+              />
+            </div>
+          </div>
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost text-base-content/40 hover:text-base-content">
               <X className="size-4" />
@@ -95,8 +116,12 @@ export default function LoanForm(props) {
                             {c.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0 flex-1 text-left">
-                            <p className="text-sm font-medium truncate">{c.name}</p>
-                            <p className="text-xs text-base-content/40 truncate">{c.phoneNumber}</p>
+                            <p className="text-sm font-medium truncate">
+                              {c.name}
+                            </p>
+                            <p className="text-xs text-base-content/40 truncate">
+                              {c.phoneNumber}
+                            </p>
                           </div>
                         </button>
                       </li>
@@ -137,7 +162,10 @@ export default function LoanForm(props) {
 
           <fieldset className="fieldset">
             <legend className="fieldset-legend">
-              {t('Payment Date')} <span className="text-base-content/40 font-normal">({t('optional')})</span>
+              {t('Payment Date')}{' '}
+              <span className="text-base-content/40 font-normal">
+                ({t('optional')})
+              </span>
             </legend>
             <input
               type="date"

@@ -64,6 +64,8 @@ const resources = {
 
       // Loan form
       'New Loan': 'New Loan',
+      'I lent': 'I lent',
+      'I borrowed': 'I borrowed',
       'Contact': 'Contact',
       'Search contacts...': 'Search contacts...',
       'Amount ($)': 'Amount ($)',
@@ -155,6 +157,8 @@ const resources = {
 
       // Loan form
       'New Loan': 'Nuevo Préstamo',
+      'I lent': 'Presté',
+      'I borrowed': 'Me prestaron',
       'Contact': 'Contacto',
       'Search contacts...': 'Buscar contactos...',
       'Amount ($)': 'Monto ($)',
