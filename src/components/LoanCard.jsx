@@ -2,21 +2,31 @@ import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { formatDate, formatDue } from '../utils/date'
 import { getCurrencySymbol } from '../utils/currency'
+import { useContactsStore } from '../stores/contacts'
 
 export default function LoanCard({ loan }) {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
   const isPaid = loan.status === 'paid'
+  const isLent = loan.direction === 'lent'
+
+  const contact = useContactsStore((state) =>
+    state.items.find((item) => item.id === loan.contactId),
+  )
+
+  const navigate = useNavigate()
+  const handleNavigate = () => navigate(`/loans/${loan.id}`)
+  const { t } = useTranslation()
 
   return (
     <div
       className="group flex items-center gap-4 bg-base-100 rounded-xl px-5 py-4 border border-base-200/50 cursor-pointer transition-all duration-200 hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
-      onClick={() => navigate(`/loans/${loan.id}`)}
+      onClick={handleNavigate}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ')
-          navigate(`/loans/${loan.id}`)
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleNavigate()
+        }
       }}
     >
       <div
@@ -27,7 +37,7 @@ export default function LoanCard({ loan }) {
             : 'bg-primary/10 text-primary')
         }
       >
-        {loan.contact.name.charAt(0).toUpperCase()}
+        {contact.name.charAt(0).toUpperCase()}
       </div>
 
       <div className="min-w-0 flex-1">
@@ -38,20 +48,19 @@ export default function LoanCard({ loan }) {
               (isPaid ? 'text-base-content/50 line-through' : '')
             }
           >
-            {loan.contact.name}
+            {contact.name}
           </span>
           <span
             className={
               'badge badge-sm ' +
-              (isPaid
-                ? 'badge-soft badge-success'
-                : 'badge-soft badge-warning')
+              (isPaid ? 'badge-soft badge-success' : 'badge-soft badge-warning')
             }
           >
             {isPaid ? t('Paid') : t('Active')}
           </span>
         </div>
         <div className="mt-1 text-xs text-base-content/40">
+          {t(isLent ? 'I lent' : 'I borrowed')} ·{' '}
           {formatDate(loan.createdAt, t)}
         </div>
       </div>
@@ -60,10 +69,16 @@ export default function LoanCard({ loan }) {
         <span
           className={
             'tabular-nums text-lg font-bold ' +
-            (isPaid ? 'text-base-content/30' : 'text-base-content')
+            (isPaid
+              ? 'text-base-content/30'
+              : isLent
+                ? 'text-red-700'
+                : 'text-green-700')
           }
         >
-          {getCurrencySymbol(loan.currency)}{Number(loan.amount).toLocaleString()}
+          {isLent ? '-' : '+'}
+          {getCurrencySymbol(loan.currency)}
+          {Number(loan.amount).toLocaleString()}
         </span>
         {loan.estimatedPaymentDate && !isPaid ? (
           <div className="mt-0.5 text-[11px] text-base-content/40">

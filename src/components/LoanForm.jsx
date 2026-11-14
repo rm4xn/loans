@@ -8,42 +8,54 @@ import { useSettingsStore } from '../stores/settings'
 import { CURRENCIES } from '../utils/currency'
 
 export default function LoanForm(props) {
-  const { t } = useTranslation()
-  const [amount, setAmount] = useState(props.loan?.amount ?? '')
-  const [contact, setContact] = useState(props.loan?.contact ?? null)
-  const [contactSearch, setContactSearch] = useState(
-    props.loan?.contact?.name ?? '',
-  )
-  const [showDropdown, setShowDropdown] = useState(false)
-
   const contacts = useContactsStore((state) => state.items)
   const defaultCurrency = useSettingsStore((state) => state.defaultCurrency)
   const { add: addLoan, update: updateLoan } = useLoansStore()
 
-  const filteredContacts = contacts.filter((c) =>
-    c.name.toLowerCase().includes(contactSearch.toLowerCase()),
+  const [amount, setAmount] = useState(props.loan?.amount ?? '')
+  const [loanDirection, setLoanDirection] = useState(
+    props.loan?.direction ?? 'lent',
   )
   const [currency, setCurrency] = useState(
     props.loan?.currency ?? defaultCurrency,
   )
+  const [contact, setContact] = useState(
+    contacts.find((c) => c.id === props.loan?.contactId ?? null),
+  )
+  const [contactSearch, setContactSearch] = useState(
+    props.loan?.contact?.name ?? '',
+  )
   const [estimatedPaymentDate, setEstimatedPaymentDate] = useState(
     props.loan?.estimatedPaymentDate ?? '',
   )
+  const filteredContacts = contacts.filter((c) =>
+    c.name.toLowerCase().includes(contactSearch.toLowerCase()),
+  )
+
+  const [showDropdown, setShowDropdown] = useState(false)
+  const { t } = useTranslation()
 
   function handleClick() {
-    if (amount && (contact || props.loan)) {
-      if (props.loan) {
-        updateLoan(props.loan.id, {
-          amount,
-          currency,
-          estimatedPaymentDate: estimatedPaymentDate,
-        })
-      } else {
-        const loan = new Loan(amount, contact, estimatedPaymentDate, currency)
-        addLoan(loan)
-      }
-      props.onClose()
+    if (!amount || !contact) return
+
+    if (props.loan) {
+      updateLoan(props.loan.id, {
+        loanDirection,
+        amount,
+        currency,
+        estimatedPaymentDate: estimatedPaymentDate,
+      })
+    } else {
+      const loan = new Loan(
+        amount,
+        contact.id,
+        loanDirection,
+        currency,
+        estimatedPaymentDate,
+      )
+      addLoan(loan)
     }
+    props.onClose()
   }
 
   const isEditing = Boolean(props.loan)
@@ -59,19 +71,24 @@ export default function LoanForm(props) {
             <h3 className="text-lg font-semibold tracking-tight">
               {isEditing ? t('Edit Loan') : t('New Loan')}
             </h3>
-            <div className="tabs tabs-box">
+            <div className="tabs tabs-sm tabs-box flex-none">
               <input
                 type="radio"
-                name="my_tabs_1"
+                name="loan-direction"
                 className="tab"
+                value="lent"
                 aria-label={t('I lent')}
-                defaultChecked
+                checked={loanDirection === 'lent'}
+                onChange={(e) => setLoanDirection(e.target.value)}
               />
               <input
                 type="radio"
-                name="my_tabs_1"
+                name="loan-direction"
                 className="tab"
+                value="borrowed"
                 aria-label={t('I borrowed')}
+                checked={loanDirection === 'borrowed'}
+                onChange={(e) => setLoanDirection(e.target.value)}
               />
             </div>
           </div>

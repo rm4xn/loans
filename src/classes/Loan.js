@@ -1,13 +1,16 @@
-class Loan {
-  constructor(amount, contact, estimatedPaymentDate = null, currency = 'USD') {
+export default class Loan {
+  constructor(
+    amount,
+    contactId,
+    direction,
+    currency,
+    estimatedPaymentDate = null,
+  ) {
     this.amount = amount
-    this.contact = contact
+    this.contactId = contactId
+    this.direction = direction
     this.currency = currency
-    this.paymentDate = null
     this.estimatedPaymentDate = estimatedPaymentDate
     this.createdAt = new Date()
-    this.status = 'active'
   }
 }
-
-export default Loan

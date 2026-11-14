@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Calendar, Clock, Pencil, Trash2 } from 'lucide-react'
 import { WhatsApp } from '@ridemountainpig/svgl-react'
 import { useLoansStore } from '../stores/loans'
+import { useContactsStore } from '../stores/contacts'
 import { useSettingsStore } from '../stores/settings'
 import { getCurrencySymbol } from '../utils/currency'
 import LoanForm from '../components/LoanForm'
@@ -15,6 +16,9 @@ function Loan() {
     return [items.find((loan) => loan.id === Number(id)), deleteLoan]
   })()
   const whatsappMessage = useSettingsStore((state) => state.whatsappMessage)
+  const contact = useContactsStore((state) =>
+    state.items.find((item) => item.id === loan.contactId),
+  )
   const navigate = useNavigate()
 
   const handleDelete = () => {
@@ -35,6 +39,7 @@ function Loan() {
   }
 
   const isPaid = loan.status === 'paid'
+  const isLent = loan.direction === 'lent'
 
   return (
     <>
@@ -56,11 +61,11 @@ function Loan() {
                 : 'bg-primary/10 text-primary')
             }
           >
-            {loan.contact.name.charAt(0).toUpperCase()}
+            {contact.name.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-semibold tracking-tight truncate">
-              {loan.contact.name}
+              {contact.name}
             </h1>
             <div className="flex items-center gap-2 mt-0.5">
               <span
@@ -74,14 +79,14 @@ function Loan() {
                 {isPaid ? t('Paid') : t('Active')}
               </span>
               <span className="text-xs text-base-content/40">
-                {loan.contact.phoneNumber}
+                {contact.phoneNumber}
               </span>
             </div>
           </div>
         </div>
 
         <p className="text-xs text-base-content/40 font-medium uppercase tracking-widest mb-1">
-          {t('Loan amount')}
+          {t(isLent ? 'You are owed' : 'You owe')}
         </p>
         <p className="text-4xl font-bold tracking-tight text-base-content mb-6">
           {getCurrencySymbol(loan.currency)}
@@ -131,21 +136,23 @@ function Loan() {
           <Pencil className="size-4" />
           {t('Edit loan')}
         </button>
-        <button
-          className="btn btn-outline btn-block justify-start gap-3 h-12"
-          onClick={() => {
-            const message = whatsappMessage
-              .replace('{{amount}}', loan.amount)
-              .replace('{{currency}}', getCurrencySymbol(loan.currency))
-            window.open(
-              `https://wa.me/${loan.contact.phoneNumber}?text=${encodeURIComponent(message)}`,
-              '_blank',
-            )
-          }}
-        >
-          <WhatsApp className="size-4" />
-          {t('WhatsApp Reminder')}
-        </button>
+        {isLent && (
+          <button
+            className="btn btn-outline btn-block justify-start gap-3 h-12"
+            onClick={() => {
+              const message = whatsappMessage
+                .replace('{{amount}}', loan.amount)
+                .replace('{{currency}}', getCurrencySymbol(loan.currency))
+              window.open(
+                `https://wa.me/${contact.phoneNumber}?text=${encodeURIComponent(message)}`,
+                '_blank',
+              )
+            }}
+          >
+            <WhatsApp className="size-4" />
+            {t('WhatsApp Reminder')}
+          </button>
+        )}
         <button
           className="btn btn-outline btn-block justify-start gap-3 h-12 text-error/70 hover:text-error hover:border-error/30"
           onClick={handleDelete}
